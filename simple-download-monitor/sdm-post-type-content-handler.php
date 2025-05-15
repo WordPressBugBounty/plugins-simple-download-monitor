@@ -97,8 +97,7 @@ function filter_sdm_post_type_content( $content ) {
 		}
 
 		//Check if reCAPTCHA enabled
-		$recaptcha_enable = isset( $main_advanced_opts['recaptcha_enable'] ) ? true : false;
-		if ( $recaptcha_enable && $cpt_is_password == 'no' ) {
+		if ( sdm_is_any_recaptcha_enabled() && $cpt_is_password == 'no' ) {
 			$download_button_code = sdm_get_download_form_with_recaptcha( $id, array(), 'sdm_download ' . $def_color );
 		}
 
@@ -148,6 +147,11 @@ function filter_sdm_post_type_content( $content ) {
 			$content .= apply_filters( 'sdm_post_single_download_page_disabled_dl_button_msg', $msg );
 			$content .= '</div>';
 		} else {
+
+			//Filter hook to allow other plugins to add their own HTML code before the download button
+			$extra_html_before_button = apply_filters( 'sdm_before_download_button', '', $id, $params );
+			$content .= $extra_html_before_button;
+
 			$download_link = '<div class="sdm_download_link">' . $download_button_code . '</div>';
 			$content      .= '<div class="sdm_post_download_section">' . apply_filters(
 				'sdm_single_page_dl_link',

@@ -148,7 +148,7 @@ function sdm_generate_fancy1_display_output( $args ) {
     }
 
     //Check if reCAPTCHA enabled
-    $recaptcha_enable = isset( $main_advanced_opts[ 'recaptcha_enable' ] ) ? true : false;
+    $recaptcha_enable = sdm_is_any_recaptcha_enabled();
     if ( $recaptcha_enable && $cpt_is_password == 'no' ) {
 	$download_button_code = sdm_get_download_form_with_recaptcha( $id, $shortcode_atts, 'sdm_download ' . $color );
     }
@@ -206,9 +206,14 @@ function sdm_generate_fancy1_display_output( $args ) {
 	$output	 .= '</div>';
     }
 
+    //Filter hook to allow other plugins to add their own HTML code before the download button.
+    $extra_html_before_button = apply_filters( 'sdm_before_download_button', '', $id, $args );
+    $output .= $extra_html_before_button;
+    
+    //The download buton section.
     $output .= '<div class="sdm_download_link">';
 
-    //apply filter on button HTML code
+    //Filter hook to allow other plugins to customize the download button code.
     $download_button_code = apply_filters( 'sdm_download_button_code_html', $download_button_code );
 
     $output .= '<span class="sdm_download_button">' . $download_button_code . '</span>';

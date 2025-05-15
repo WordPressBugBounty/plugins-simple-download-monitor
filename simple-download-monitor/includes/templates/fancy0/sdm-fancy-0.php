@@ -128,19 +128,23 @@ function sdm_generate_fancy0_display_output( $args ) {
 	$download_button_code = sdm_get_download_form_with_termsncond( $id, $args, 'sdm_download ' . $def_color );
     }
 
-    //Check if reCAPTCHA enabled
-    $recaptcha_enable = isset( $main_advanced_opts[ 'recaptcha_enable' ] ) ? true : false;
-    if ( $recaptcha_enable && $cpt_is_password == 'no' ) {
-	$download_button_code = sdm_get_download_form_with_recaptcha( $id, $args, 'sdm_download ' . $def_color );
-    }
+	//Check if reCAPTCHA enabled
+	$recaptcha_enable = sdm_is_any_recaptcha_enabled();
+	if ( $recaptcha_enable && $cpt_is_password == 'no' ) {
+		$download_button_code = sdm_get_download_form_with_recaptcha( $id, $args, 'sdm_download ' . $def_color );
+	}
 
-    if ( $cpt_is_password !== 'no' ) {//This is a password protected download so replace the download now button with password requirement
+	if ( $cpt_is_password !== 'no' ) {//This is a password protected download so replace the download now button with password requirement
 	$download_button_code = sdm_get_password_entry_form( $id, $args, 'sdm_download ' . $def_color );
     }
 
     $output = "";
 
-    //apply filter on button HTML code
+    //Filter hook to allow other plugins to add their own HTML code before the download button
+    $extra_html_before_button = apply_filters( 'sdm_before_download_button', '', $id, $args );
+    $output .= $extra_html_before_button;
+
+    //Filter hook to allow other plugins to customize the download button code.
     $download_button_code = apply_filters( 'sdm_download_button_code_html', $download_button_code );
 
     $output .= '<div class="sdm_download_button_box_default"><div class="sdm_download_link">' . $download_button_code . '</div></div>';
