@@ -4,7 +4,7 @@ Donate link: https://www.tipsandtricks-hq.com
 Tags: download, downloads, count, counter, tracker
 Requires at least: 6.0
 Tested up to: 6.8
-Stable tag: 3.9.31
+Stable tag: 3.9.32
 License: GPLv2 or later
 
 Easily manage downloadable files and monitor downloads of your digital files from your WordPress site.
@@ -94,6 +94,7 @@ The following language translations are already available for the download monit
 * Russian
 * Dutch
 * Portuguese (Brasil)
+* Hebrew
 
 = Simple Download Monitor Plugin Usage =
 
@@ -133,16 +134,16 @@ Example Shortcode Usage:
 
 You can check the download stats from the "Downloads->Logs" interface. It shows the number of downloads for each files, IP address of the user who downloaded it, date and time of the download.
 
-** 3rd Party or External Libraries/Services **
+== 3rd Party or External Libraries/Services ==
 
 The plugin uses the Google Charts library to show the download count charts in the admin interface (if you use the stats menu of the plugin). You can see more details about this library at the following URL:
 https://developers.google.com/chart/
 
-** Detailed Usage Documentation **
+== Detailed Usage Documentation ==
 
 View more usage instructions on the [Download Monitor Plugin](https://simple-download-monitor.com/) page.
 
-** Github Repository **
+== Github Repository ==
 
 https://github.com/Arsenal21/simple-download-monitor
 
@@ -197,6 +198,11 @@ Yes
 4. The download item add/edit page in the WordPress admin dashboard.
 
 == Changelog ==
+
+= 3.9.32 =
+- Readme file updated to fix the formatting of some sections.
+- Added Hebrew translation to the plugin.
+- Download via direct link feature is now compatible with the various CAPTCHA options.
 
 = 3.9.31 =
 - Cloudflare Turnstile CAPTCHA support added. View the [Cloudflare Turnstile CAPTCHA documentation](https://simple-download-monitor.com/using-cloudflare-turnstile-captcha-with-the-simple-download-monitor/) for more details.

@@ -748,5 +748,42 @@ function sdm_is_recaptcha_v3_enabled(){
 function sdm_get_recaptcha_v3_html(){
 	wp_enqueue_script('sdm-recaptcha-v3-scripts-lib');
 
+	// This input field programmatically stores captcha token using js to send the token to the server with form submission.
     return '<input type="hidden" class="sdm-g-recaptcha-v3-response" name="g-recaptcha-response"/>';
+}
+
+function sdm_dl_request_intermediate_page($content) {
+	wp_enqueue_script( 'sdm-intermediate-page-scripts', WP_SIMPLE_DL_MONITOR_URL . '/js/sdm_intermediate_page.js' , array(), WP_SIMPLE_DL_MONITOR_VERSION);
+
+    // The redirect url when leaving this intermediate page.
+    $download_id = isset($_REQUEST['download_id']) ? sanitize_text_field($_REQUEST['download_id']) : '';
+	$redirect_url = apply_filters('sdm_redirect_url_from_intermediate_page', '', $download_id);
+	?>
+	<!DOCTYPE html>
+	<html <?php language_attributes(); ?>>
+	<head>
+		<meta charset="<?php bloginfo( 'charset' ); ?>" />
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+		<?php wp_head(); ?>
+	</head>
+	<body <?php body_class(); ?>>
+	<?php wp_body_open(); ?>
+
+	<main class="sdm_dl_request_intermediate_page_content">
+		<?php echo wp_kses_post($content) ?>
+
+        <?php // The following renders after captcha verification successful and download has started. ?>
+        <div id="sdm_after_captcha_verification_content" class="hidden">
+            <p><?php _e('CAPTCHA verification successful. Once the download is complete, click the button below to return.', 'simple-download-monitor') ?></p>
+            <button id="sdm_intermediate_page_manual_redirection_btn" class="sdm_download white"><?php _e('Go Back', 'simple-download-monitor') ?></button>
+        </div>
+
+		<input type="hidden" id="sdm_redirect_form_intermediate_page_url" value="<?php echo esc_url_raw($redirect_url) ?>">
+	</main>
+
+	<?php wp_footer(); ?>
+	</body>
+	</html>
+	<?php
+	exit;
 }
