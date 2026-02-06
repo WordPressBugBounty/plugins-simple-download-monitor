@@ -3,8 +3,8 @@ Contributors: Tips and Tricks HQ, Ruhul Amin, josh401, mbrsolution, alexanderfox
 Donate link: https://www.tipsandtricks-hq.com
 Tags: download, downloads, count, counter, tracker
 Requires at least: 6.0
-Tested up to: 6.8
-Stable tag: 3.9.35
+Tested up to: 6.9
+Stable tag: 4.0.3
 License: GPLv2 or later
 
 Easily manage downloadable files and monitor downloads of your digital files from your WordPress site.
@@ -74,10 +74,12 @@ https://www.youtube.com/watch?v=SjVaanbulRU
 * There is an option to show an ajax file tree browser so your visitors can browse all your files and download the ones they want.
 * Option to ignore download count from bots.
 * Option to add Google reCAPTCHA to your download buttons.
-* Option to add Terms and Condtions to your download buttons.
+* Option to add Cloudflare Turnstile CAPTCHA to your download buttons.
+* Option to add Terms and Conditions to your download buttons.
 * Ability to easily clone/copy your existing download items.
 * Ability to insert Adsense or other Ad code inside the download item display.
 * Gutenberg block to insert download now buttons on a post or page.
+* Option to override the default template by placing a custom template file in the active theme’s directory.
 * The stats menu can show you the top downloads, downloads by date, country, browser etc.
 
 View more details on the [download monitor plugin](https://simple-download-monitor.com/) page.
@@ -198,6 +200,25 @@ Yes
 4. The download item add/edit page in the WordPress admin dashboard.
 
 == Changelog ==
+
+= 4.0.3 =
+- Added filtering by Download ID option to the stats menu.
+
+= 4.0.2 =
+- Added help text in the Advanced settings to mention that we have Cloudflare Turnstile CAPTCHA support now.
+- Fixed an issue where the custom 'Button Text' field value from the download edit page was not being applied correctly when using the category shortcode.
+
+= 4.0.1 =
+- Added a new filter hook 'sdm_load_template_files' to allow developers to modify/customize the fancy display templates.
+- Improved the new template loading code structure to make it easier to copy and modify templates.
+
+= 4.0.0 =
+- Added functionality to override the template by using a custom template file in the active theme's folder.
+- Amazon bot filter added to the bot detection function.
+- Added a filter hook 'sdm_get_ip_address' to allow modification of the detected IP address.
+- Category shortcode output for fancy 0 has been moved into a dedicated function.
+- Added {ip_address} email merge tag to the email notification addon.
+- Added a new filter hook 'sdm_download_window_target' to allow customization of the download link's window target.
 
 = 3.9.35 =
 - Added output escaping to a parameter in the sdm_download_link shortcode.

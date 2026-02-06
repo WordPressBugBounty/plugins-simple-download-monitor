@@ -3,7 +3,7 @@
  * Plugin Name: Simple Download Monitor
  * Plugin URI: https://simple-download-monitor.com/
  * Description: Easily manage downloadable files and monitor downloads of your digital files from your WordPress site.
- * Version: 3.9.35
+ * Version: 4.0.3
  * Author: Tips and Tricks HQ, Ruhul Amin, Josh Lobe
  * Author URI: https://www.tipsandtricks-hq.com/development-center
  * License: GPL2
@@ -14,11 +14,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'WP_SIMPLE_DL_MONITOR_VERSION', '3.9.35' );
+define( 'WP_SIMPLE_DL_MONITOR_VERSION', '4.0.3' );
 define( 'WP_SIMPLE_DL_MONITOR_DIR_NAME', dirname( plugin_basename( __FILE__ ) ) );
 define( 'WP_SIMPLE_DL_MONITOR_URL', plugins_url( '', __FILE__ ) );
 define( 'WP_SIMPLE_DL_MONITOR_PATH', plugin_dir_path( __FILE__ ) );
 define( 'WP_SIMPLE_DL_MONITOR_SITE_HOME_URL', home_url() );
+define( 'WP_SIMPLE_DL_MONITOR_TEMPLATE_DIR', WP_SIMPLE_DL_MONITOR_PATH . 'includes/templates/' );
 define( 'WP_SDM_LOG_FILE', WP_SIMPLE_DL_MONITOR_PATH . 'sdm-debug-log.txt' );
 
 global $sdm_db_version;
@@ -470,9 +471,10 @@ class simpleDownloadManager {
 		//Register the main setting
 		register_setting( 'sdm_downloads_options', 'sdm_downloads_options' );
 
-		/*   * ************************** */
+		/**************************** */
 		/* General Settings Section */
-		/*   * ************************** */
+		/**************************** */
+		//Note: These settings sections and fileds are outputed from the function "sdm_admin_menu_general_settings()" in 'includes/sdm-admin-menu-handler.php' file.
 
 		//Add all the settings section that will go under the main settings
 		add_settings_section( 'general_options', __( 'General Options', 'simple-download-monitor' ), array( $this, 'general_options_cb' ), 'general_options_section' );
@@ -505,10 +507,13 @@ class simpleDownloadManager {
 
 		add_settings_field( 'enable_debug', __( 'Enable Debug', 'simple-download-monitor' ), array( $this, 'enable_debug_cb' ), 'sdm_debug_section', 'sdm_debug' );
 
-		/*   * ************************** */
+		/**************************** */
 		/* Advanced Settings Section */
-		/*   * ************************** */
-		//Add the advanced settings section
+		/**************************** */
+		//NOTE: The settings section and the fields are outputed from the function "sdm_admin_menu_advanced_settings()" in 'includes/sdm-admin-menu-handler.php' file.		
+
+		//Add the advanced settings sections
+		add_settings_section( 'cloudflare_turnstile_options', __( 'Cloudflare Turnstile CAPTCHA', 'simple-download-monitor' ), array( $this, 'cloudflare_turnstile_options_callback' ), 'cloudflare_turnstile_options_section' );
 		add_settings_section( 'recaptcha_options_v3', __( 'Google Captcha (reCAPTCHA v3)', 'simple-download-monitor' ), array( $this, 'recaptcha_v3_options_cb' ), 'recaptcha_v3_options_section' );
 		add_settings_section( 'recaptcha_options', __( 'Google Captcha (reCAPTCHA v2)', 'simple-download-monitor' ), array( $this, 'recaptcha_v2_options_cb' ), 'recaptcha_options_section' );
 		add_settings_section( 'termscond_options', __( 'Terms and Conditions', 'simple-download-monitor' ), array( $this, 'termscond_options_cb' ), 'termscond_options_section' );
@@ -568,6 +573,20 @@ class simpleDownloadManager {
 		echo '<p><b>' . esc_html__( 'Warning', 'simple-download-monitor' ) . ': </b> ' . esc_html__( 'this can\'t be undone. All settings, download items, download logs will be deleted.', 'simple-download-monitor' ) . '</p>';
 		echo '<p><button id="sdmDeleteData" class="button" style="color:red;">' . esc_html__( 'Delete all data and deactivate plugin', 'simple-download-monitor' ) . '</button></p>';
 		echo '<br />';
+	}
+
+	public function cloudflare_turnstile_options_callback() {
+		//Set the message that will be shown below the Cloudflare Turnstile section heading.
+		echo '<p class="description">' . wp_kses(
+				__( 'You can use our <a href="https://simple-download-monitor.com/using-cloudflare-turnstile-captcha-with-the-simple-download-monitor/" target="_blank">Bot Protection with Turnstile CAPTCHA</a> plugin to add Cloudflare Turnstile CAPTCHA to your download buttons.', 'simple-download-monitor' ),
+				array(
+					'a' => array(
+						'href'   => array(),
+						'target' => array(),
+					),
+				)
+			) . '</p>';
+		echo '<p style="padding-bottom: 10px"></p>';
 	}
 
 	public function recaptcha_v3_options_cb() {

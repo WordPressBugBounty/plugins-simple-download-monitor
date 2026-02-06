@@ -97,6 +97,7 @@ function sdm_get_password_entry_form( $id, $args = array(), $class = '' ) {
 	//Check if new window is enabled
 	$new_window    = get_post_meta( $id, 'sdm_item_new_window', true );
 	$window_target = empty( $new_window ) ? '' : ' target="_blank"';
+	$window_target = apply_filters('sdm_download_window_target', $window_target);
 
 	//Form code
 	$data .= '<form action="' . $action_url . '" method="post" id="' . $uuid . '" class="sdm-download-form"' . $window_target . '>';
@@ -146,12 +147,16 @@ function sdm_get_ip_address( $ignore_private_and_reserved = false ) {
 				$ip = trim( $ip ); // just to be safe
 
 				if ( filter_var( $ip, FILTER_VALIDATE_IP, $flags ) !== false ) {
+					//Filter hook to allow modification of the detected IP address.
+					$ip = apply_filters('sdm_get_ip_address', $ip);
 					return $ip;
 				}
 			}
 		}
 	}
-	return null;
+	//No valid IP found. Filter hook.
+	$ip = apply_filters('sdm_get_ip_address', '');
+	return $ip;
 }
 
 /**
@@ -311,7 +316,7 @@ function sdm_get_logged_in_user() {
 
 // Checks if current visitor is a bot
 function sdm_visitor_is_bot() {
-	$bots = array( 'archiver', 'baiduspider', 'bingbot', 'binlar', 'casper', 'checkprivacy', 'clshttp', 'cmsworldmap', 'comodo', 'curl', 'diavol', 'dotbot', 'DuckDuckBot', 'Exabot', 'email', 'extract', 'facebookexternalhit', 'feedfinder', 'flicky', 'googlebot', 'grab', 'harvest', 'httrack', 'ia_archiver', 'jakarta', 'kmccrew', 'libwww', 'loader', 'MJ12bot', 'miner', 'msnbot', 'nikto', 'nutch', 'planetwork', 'purebot', 'pycurl', 'python', 'scan', 'skygrid', 'slurp', 'sucker', 'turnit', 'vikspider', 'wget', 'winhttp', 'yandex', 'yandexbot', 'yahoo', 'youda', 'zmeu', 'zune', 'Sidetrade', 'AhrefsBot' );
+	$bots = array( 'archiver', 'baiduspider', 'bingbot', 'binlar', 'casper', 'checkprivacy', 'clshttp', 'cmsworldmap', 'comodo', 'curl', 'diavol', 'dotbot', 'DuckDuckBot', 'Exabot', 'email', 'extract', 'facebookexternalhit', 'feedfinder', 'flicky', 'googlebot', 'grab', 'harvest', 'httrack', 'ia_archiver', 'jakarta', 'kmccrew', 'libwww', 'loader', 'MJ12bot', 'miner', 'msnbot', 'nikto', 'nutch', 'planetwork', 'purebot', 'pycurl', 'python', 'scan', 'skygrid', 'slurp', 'sucker', 'turnit', 'vikspider', 'wget', 'winhttp', 'yandex', 'yandexbot', 'yahoo', 'youda', 'zmeu', 'zune', 'Sidetrade', 'AhrefsBot', 'Amazonbot' );
 
 	$isBot = false;
 
@@ -348,6 +353,7 @@ function sdm_get_download_form_with_recaptcha( $id, $args = array(), $class = ''
 
 	$new_window    = get_post_meta( $id, 'sdm_item_new_window', true );
 	$window_target = empty( $new_window ) ? '' : ' target="_blank"';
+	$window_target = apply_filters('sdm_download_window_target', $window_target);
 
 	$data = '<form action="' . $action_url . '" method="post" class="sdm-g-recaptcha-form sdm-download-form"' . esc_attr($window_target) . '>';
 
@@ -406,6 +412,7 @@ function sdm_get_download_form_with_termsncond( $id, $args = array(), $class = '
 
 	$new_window    = get_post_meta( $id, 'sdm_item_new_window', true );
 	$window_target = empty( $new_window ) ? '' : ' target="_blank"';
+	$window_target = apply_filters('sdm_download_window_target', $window_target);
 
 	$data  = '<form action="' . $action_url . '" method="post" class="sdm-download-form"' . $window_target . '>';
 	$data .= sdm_get_checkbox_for_termsncond();
@@ -786,4 +793,40 @@ function sdm_dl_request_intermediate_page($content) {
 	</html>
 	<?php
 	exit;
+}
+
+function sdm_load_template( $fancy, $args = array(), $load_once = false ) {
+	$fancy = strval( $fancy );
+	$template_name = 'sdm-fancy-' . $fancy . '.php';
+	$template_files = array(
+		'simple-download-monitor/'. $template_name,
+	);
+
+	//Filter hook to allow overriding of the template file path
+	$template_files = apply_filters( 'sdm_load_template_files', $template_files, $template_name);
+	
+	$located = locate_template($template_files);
+
+    $plugin_template_path = WP_SIMPLE_DL_MONITOR_TEMPLATE_DIR . '/sdm-fancy-'.$fancy.'.php';
+
+	if ( empty($located) && file_exists( $plugin_template_path ) ) {
+		$located = $plugin_template_path;
+	}
+
+	$tpl_html = '';
+
+	if ( ! empty( $located ) ) {
+		// Template file found in theme. Load it.
+		ob_start();
+
+		if ($load_once) {
+			include_once $located;
+		} else {
+			include $located;
+		}
+
+		$tpl_html = ob_get_clean();
+	}
+
+	return $tpl_html;
 }
