@@ -3,7 +3,7 @@
  * Plugin Name: Simple Download Monitor
  * Plugin URI: https://simple-download-monitor.com/
  * Description: Easily manage downloadable files and monitor downloads of your digital files from your WordPress site.
- * Version: 4.0.6
+ * Version: 4.0.7
  * Author: Tips and Tricks HQ, Ruhul Amin, Josh Lobe
  * Author URI: https://www.tipsandtricks-hq.com/development-center
  * License: GPL2
@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'WP_SIMPLE_DL_MONITOR_VERSION', '4.0.6' );
+define( 'WP_SIMPLE_DL_MONITOR_VERSION', '4.0.7' );
 define( 'WP_SIMPLE_DL_MONITOR_DIR_NAME', dirname( plugin_basename( __FILE__ ) ) );
 define( 'WP_SIMPLE_DL_MONITOR_URL', plugins_url( '', __FILE__ ) );
 define( 'WP_SIMPLE_DL_MONITOR_PATH', plugin_dir_path( __FILE__ ) );
@@ -121,8 +121,11 @@ function sdm_admin_init_time_tasks() {
 	add_action( 'wp_ajax_sdm_delete_data', 'sdm_delete_data_handler' );
 	add_action( 'wp_ajax_sdm_export_logs', 'sdm_export_logs_handler' );
 
-	if ( ! is_admin() || ! user_can( wp_get_current_user(), 'administrator' ) ) {
-		// user is not an admin
+	$sdm_admin_access_permission =  get_sdm_admin_access_permission();
+	$sdm_pages_capability = apply_filters("sdm_pages_capability", $sdm_admin_access_permission);
+
+	if ( ! is_admin() || ! user_can( wp_get_current_user(), $sdm_pages_capability ) ) {
+		// user does not have enough capability.
 		return;
 	}
 
