@@ -3,7 +3,7 @@
  * Plugin Name: Simple Download Monitor
  * Plugin URI: https://simple-download-monitor.com/
  * Description: Easily manage downloadable files and monitor downloads of your digital files from your WordPress site.
- * Version: 4.0.9
+ * Version: 4.1.0
  * Author: Tips and Tricks HQ, Ruhul Amin, Josh Lobe
  * Author URI: https://www.tipsandtricks-hq.com/development-center
  * License: GPL2
@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'WP_SIMPLE_DL_MONITOR_VERSION', '4.0.9' );
+define( 'WP_SIMPLE_DL_MONITOR_VERSION', '4.1.0' );
 define( 'WP_SIMPLE_DL_MONITOR_DIR_NAME', dirname( plugin_basename( __FILE__ ) ) );
 define( 'WP_SIMPLE_DL_MONITOR_URL', plugins_url( '', __FILE__ ) );
 define( 'WP_SIMPLE_DL_MONITOR_PATH', plugin_dir_path( __FILE__ ) );
@@ -960,8 +960,8 @@ class simpleDownloadManager {
 					if ( $meta_key == '_wp_old_slug' ) {
 						continue;
 					}
-					$meta_value      = addslashes( $meta_info->meta_value );
-                                        $sql_query_sel[] = $wpdb->prepare( "SELECT %d, %s, %s", $new_post_id, $meta_key, $meta_value );
+					$meta_value      = !is_null($meta_info->meta_value) ? addslashes( $meta_info->meta_value ) : $meta_info->meta_value;
+                    $sql_query_sel[] = $wpdb->prepare( "SELECT %d, %s, %s", $new_post_id, $meta_key, $meta_value );
 				}
 				$sql_query .= implode( ' UNION ALL ', $sql_query_sel );
 				$wpdb->query( $sql_query );
