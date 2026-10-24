@@ -4,7 +4,7 @@ Donate link: https://www.tipsandtricks-hq.com
 Tags: download, downloads, count, counter, tracker
 Requires at least: 6.0
 Tested up to: 7.1
-Stable tag: 4.1.1
+Stable tag: 4.1.2
 License: GPLv2 or later
 
 Easily manage downloadable files and monitor downloads of your digital files from your WordPress site.
@@ -200,6 +200,9 @@ Yes
 4. The download item add/edit page in the WordPress admin dashboard.
 
 == Changelog ==
+
+= 4.1.2 =
+- Improved the Enhanced File Protection .htaccess rules for compatibility with LiteSpeed/OpenLiteSpeed and Apache 2.4 servers. Existing default .htaccess files are upgraded automatically.
 
 = 4.1.1 =
 - Performance improvement by using COUNT queries instead of fetching full rows where download counts were needed.
